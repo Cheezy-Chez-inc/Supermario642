@@ -59,18 +59,18 @@ void update_mario_platform(void) {
  * Get Mario's position and store it in x, y, and z.
  */
 void get_mario_pos(f32 *x, f32 *y, f32 *z) {
-    *x = gMarioStates[0].pos[0];
-    *y = gMarioStates[0].pos[1];
-    *z = gMarioStates[0].pos[2];
+    *x = gMarioState->pos[0];
+    *y = gMarioState->pos[1];
+    *z = gMarioState->pos[2];
 }
 
 /**
  * Set Mario's position.
  */
 void set_mario_pos(f32 x, f32 y, f32 z) {
-    gMarioStates[0].pos[0] = x;
-    gMarioStates[0].pos[1] = y;
-    gMarioStates[0].pos[2] = z;
+    gMarioState->pos[0] = x;
+    gMarioState->pos[1] = y;
+    gMarioState->pos[2] = z;
 }
 
 #ifdef PLATFORM_DISPLACEMENT_2
@@ -259,7 +259,7 @@ void apply_platform_displacement(u32 isMario, struct Object *platform) {
         // unusedYaw   = platform->oFaceAngleYaw;
 
         if (isMario) {
-            gMarioStates[0].faceAngle[1] += rotation[1];
+            gMarioState->faceAngle[1] += rotation[1];
         }
 
         platformPosX = platform->oPosX;

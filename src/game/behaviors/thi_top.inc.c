@@ -29,7 +29,7 @@ void bhv_thi_huge_island_top_loop(void) {
 void bhv_thi_tiny_island_top_loop(void) {
     if (!(gTHIWaterDrained & 1)) {
         if (o->oAction == 0) {
-            if (o->oDistanceToMario < 500.0f && gMarioStates[0].action == ACT_GROUND_POUND_LAND) {
+            if (o->oDistanceToMario < 500.0f && gMarioState->action == ACT_GROUND_POUND_LAND) {
                 o->oAction++;
                 cur_obj_spawn_particles(&sThiTopPuffs);
                 spawn_triangle_break_particles(20, MODEL_DIRT_ANIMATION, 0.3f, 3);

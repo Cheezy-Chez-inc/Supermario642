@@ -11,15 +11,15 @@ void common_anchor_mario_behavior(f32 forwardVel, f32 yVel, s32 flag) {
 
         case 2:
             gMarioObject->oInteractStatus |= flag + INT_STATUS_MARIO_THROWN_BY_OBJ;
-            gMarioStates[0].forwardVel = forwardVel;
-            gMarioStates[0].vel[1] = yVel;
+            gMarioState->forwardVel = forwardVel;
+            gMarioState->vel[1] = yVel;
             o->parentObj->oCommonAnchorAction = 0;
             break;
 
         case 3:
             gMarioObject->oInteractStatus |= INT_STATUS_MARIO_THROWN_BY_OBJ | INT_STATUS_MARIO_DROPPED_BY_OBJ; // loads 2 interactions at once?
-            gMarioStates[0].forwardVel = 10.0f;
-            gMarioStates[0].vel[1] = 10.0f;
+            gMarioState->forwardVel = 10.0f;
+            gMarioState->vel[1] = 10.0f;
             o->parentObj->oCommonAnchorAction = 0;
             break;
     }

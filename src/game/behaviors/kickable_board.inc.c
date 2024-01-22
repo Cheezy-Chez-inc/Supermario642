@@ -3,12 +3,12 @@
 s32 check_mario_attacking(void) {
     if (obj_check_if_collided_with_object(o, gMarioObject)) {
         if (abs_angle_diff(o->oMoveAngleYaw, gMarioObject->oMoveAngleYaw) > 0x6000) {
-            if (gMarioStates[0].action == ACT_SLIDE_KICK      ) return WF_ATTACK_GROUND;
-            if (gMarioStates[0].action == ACT_PUNCHING        ) return WF_ATTACK_GROUND;
-            if (gMarioStates[0].action == ACT_MOVE_PUNCHING   ) return WF_ATTACK_GROUND;
-            if (gMarioStates[0].action == ACT_SLIDE_KICK_SLIDE) return WF_ATTACK_GROUND;
-            if (gMarioStates[0].action == ACT_JUMP_KICK       ) return WF_ATTACK_AIR;
-            if (gMarioStates[0].action == ACT_WALL_KICK_AIR   ) return WF_ATTACK_AIR;
+            if (gMarioState->action == ACT_SLIDE_KICK      ) return WF_ATTACK_GROUND;
+            if (gMarioState->action == ACT_PUNCHING        ) return WF_ATTACK_GROUND;
+            if (gMarioState->action == ACT_MOVE_PUNCHING   ) return WF_ATTACK_GROUND;
+            if (gMarioState->action == ACT_SLIDE_KICK_SLIDE) return WF_ATTACK_GROUND;
+            if (gMarioState->action == ACT_JUMP_KICK       ) return WF_ATTACK_AIR;
+            if (gMarioState->action == ACT_WALL_KICK_AIR   ) return WF_ATTACK_AIR;
         }
     }
 

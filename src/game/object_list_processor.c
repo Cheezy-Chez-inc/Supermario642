@@ -258,12 +258,16 @@ void spawn_particle(u32 activeParticleFlag, ModelID16 model, const BehaviorScrip
     }
 }
 
+
 /**
  * Mario's primary behavior update function.
  */
 void bhv_mario_update(void) {
     u32 particleFlags = 0;
     s32 i;
+    
+    gMarioState = &gMarioStates[gCurrentObject->oBehParams & 0xFF];
+    gMarioState->marioObj = gCurrentObject;
 
     particleFlags = execute_mario_action(gCurrentObject);
     gCurrentObject->oMarioParticleFlags = particleFlags;
@@ -281,6 +285,8 @@ void bhv_mario_update(void) {
 
         i++;
     }
+     
+
 }
 
 /**

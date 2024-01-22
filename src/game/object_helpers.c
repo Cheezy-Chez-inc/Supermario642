@@ -701,7 +701,7 @@ void cur_obj_change_action(s32 action) {
 }
 
 void cur_obj_set_vel_from_mario_vel(f32 min, f32 mul) {
-    f32 marioFwdVel = gMarioStates[0].forwardVel;
+    f32 marioFwdVel = gMarioState->forwardVel;
     f32 minVel = min * mul;
 
     if (marioFwdVel < minVel) {
@@ -762,11 +762,11 @@ s32 cur_obj_check_frame_prior_current_frame(s16 *frame) {
 }
 
 s32 mario_is_in_air_action(void) {
-    return gMarioStates[0].action & ACT_FLAG_AIR;
+    return gMarioState->action & ACT_FLAG_AIR;
 }
 
 s32 mario_is_dive_sliding(void) {
-    return gMarioStates[0].action == ACT_DIVE_SLIDE;
+    return gMarioState->action == ACT_DIVE_SLIDE;
 }
 
 void cur_obj_set_y_vel_and_animation(f32 yVel, s32 animIndex) {
@@ -863,7 +863,7 @@ ModelID32 obj_get_model_id(struct Object *obj) {
 }
 
 void mario_set_flag(s32 flag) {
-    gMarioStates[0].flags |= flag;
+    gMarioState->flags |= flag;
 }
 
 s32 cur_obj_clear_interact_status_flag(s32 flag) {
@@ -1725,7 +1725,7 @@ s32 cur_obj_wait_then_blink(s32 timeUntilBlinking, s32 numBlinks) {
 
 s32 cur_obj_is_mario_ground_pounding_platform(void) {
     if (gMarioObject->platform == o) {
-        if (gMarioStates[0].action == ACT_GROUND_POUND_LAND) {
+        if (gMarioState->action == ACT_GROUND_POUND_LAND) {
             return TRUE;
         }
     }
@@ -1751,8 +1751,8 @@ void cur_obj_push_mario_away(f32 radius) {
         marioDist = (radius - sqrtf(marioDist)) / radius;
         //! If this function pushes Mario out of bounds, it will trigger Mario's
         //  oob failsafe
-        gMarioStates[0].pos[0] += marioDist * marioRelX;
-        gMarioStates[0].pos[2] += marioDist * marioRelZ;
+        gMarioState->pos[0] += marioDist * marioRelX;
+        gMarioState->pos[2] += marioDist * marioRelZ;
     }
 }
 
@@ -1989,7 +1989,7 @@ s32 cur_obj_can_mario_activate_textbox(f32 radius, f32 height, UNUSED s32 unused
         o->oDistanceToMario < 1500.0f
         && o->oPosY < gMarioObject->oPosY + 160.0f
         && gMarioObject->oPosY < o->oPosY + height
-        && !(gMarioStates[0].action & ACT_FLAG_AIR)
+        && !(gMarioState->action & ACT_FLAG_AIR)
         && lateral_dist_between_objects(o, gMarioObject) < radius
         && mario_ready_to_speak()
     );

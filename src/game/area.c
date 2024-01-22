@@ -30,7 +30,7 @@
 #include "s2d_engine/init.h"
 #endif
 
-struct SpawnInfo gPlayerSpawnInfos[1];
+struct SpawnInfo gPlayerSpawnInfos[2];
 struct GraphNode *gGraphNodePointers[MODEL_ID_COUNT];
 struct Area gAreaData[AREA_COUNT];
 
@@ -267,20 +267,15 @@ void unload_area(void) {
     }
 }
 
-void load_mario_area(void) {
+void load_mario_area(u8 playerIndex) {
     stop_sounds_in_continuous_banks();
     load_area(gMarioSpawnInfo->areaIndex);
 
     if (gCurrentArea->index == gMarioSpawnInfo->areaIndex) {
-        gCurrentArea->flags |= AREA_FLAG_LOAD;
-        spawn_objects_from_info(0, gMarioSpawnInfo);
-    }
-
-    if (gAreaSkyboxStart[gCurrAreaIndex - 1]) {
-        load_segment_decompress(SEGMENT_SKYBOX, gAreaSkyboxStart[gCurrAreaIndex - 1], gAreaSkyboxEnd[gCurrAreaIndex - 1]);
+        gCurrentArea->flags |= 0x01;
+        spawn_objects_from_info(0, &gPlayerSpawnInfos[playerIndex]);
     }
 }
-
 void unload_mario_area(void) {
     if ((gCurrentArea != NULL) && (gCurrentArea->flags & AREA_FLAG_LOAD)) {
         unload_objects_from_area(0, gMarioSpawnInfo->activeAreaIndex);

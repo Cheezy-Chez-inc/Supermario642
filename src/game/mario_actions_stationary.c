@@ -39,9 +39,6 @@ s32 check_common_idle_cancels(struct MarioState *m) {
         return set_mario_action(m, ACT_BEGIN_SLIDING, 0);
     }
 
-    if (m->input & INPUT_FIRST_PERSON) {
-        return set_mario_action(m, ACT_FIRST_PERSON, 0);
-    }
 
     if (m->input & INPUT_NONZERO_ANALOG) {
         m->faceAngle[1] = (s16) m->intendedYaw;
@@ -469,9 +466,6 @@ s32 act_standing_against_wall(struct MarioState *m) {
         return check_common_action_exits(m);
     }
 
-    if (m->input & INPUT_FIRST_PERSON) {
-        return set_mario_action(m, ACT_FIRST_PERSON, 0);
-    }
 
     if (m->input & INPUT_B_PRESSED) {
         return set_mario_action(m, ACT_PUNCHING, 0);
@@ -1112,7 +1106,6 @@ s32 mario_execute_stationary_action(struct MarioState *m) {
         case ACT_STOP_CRAWLING:           cancel = act_stop_crawling(m);                    break;
         case ACT_SLIDE_KICK_SLIDE_STOP:   cancel = act_slide_kick_slide_stop(m);            break;
         case ACT_SHOCKWAVE_BOUNCE:        cancel = act_shockwave_bounce(m);                 break;
-        case ACT_FIRST_PERSON:            cancel = act_first_person(m);                     break;
         case ACT_JUMP_LAND_STOP:          cancel = act_jump_land_stop(m);                   break;
         case ACT_DOUBLE_JUMP_LAND_STOP:   cancel = act_double_jump_land_stop(m);            break;
         case ACT_FREEFALL_LAND_STOP:      cancel = act_freefall_land_stop(m);               break;

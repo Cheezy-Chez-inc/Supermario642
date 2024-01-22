@@ -275,7 +275,7 @@ void bhv_book_switch_loop(void) {
                     o->parentObj->oBookSwitchManagerNumCorrectChoices++;
                 } else {
                     s16 rand01 = random_u16() & 0x1;
-                    s16 z = gMarioObject->oPosZ + 1.5f * gMarioStates[0].vel[2];
+                    s16 z = gMarioObject->oPosZ + 1.5f * gMarioState->vel[2];
 
                     play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
 
