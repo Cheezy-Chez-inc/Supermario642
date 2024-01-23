@@ -1702,48 +1702,27 @@ void queue_rumble_particles(struct MarioState *m) {
 /**
  * Main function for executing Mario's behavior. Returns particleFlags.
  */
-s32 execute_mario_action(UNUSED struct Object *obj) {
+s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
 
-    // Updates once per frame:
-    vec3f_get_dist_and_lateral_dist_and_angle(gMarioState->prevPos, gMarioState->pos, &gMarioState->moveSpeed, &gMarioState->lateralSpeed, &gMarioState->movePitch, &gMarioState->moveYaw);
-    vec3f_copy(gMarioState->prevPos, gMarioState->pos);
+#ifdef CHEATS_ACTIONS
+    cheats_mario_action(gMarioState);
+#endif
+
+#ifdef EXT_DEBUG_MENU
+    set_debug_mario_action(gMarioState);
+#endif
 
     if (gMarioState->action) {
-#ifdef ENABLE_DEBUG_FREE_MOVE
-        if (
-            (gMarioState->controller->buttonDown & U_JPAD) &&
-            !(gMarioState->controller->buttonDown & L_TRIG)
-        ) {
-            set_camera_mode(gMarioState->area->camera, CAMERA_MODE_8_DIRECTIONS, 1);
-            set_mario_action(gMarioState, ACT_DEBUG_FREE_MOVE, 0);
-        }
-#endif
-#ifdef ENABLE_CREDITS_BENCHMARK
-        static s32 startedBenchmark = FALSE;
-        if (!startedBenchmark) {
-            set_mario_action(gMarioState, ACT_IDLE, 0);
-            level_trigger_warp(gMarioState, WARP_OP_CREDITS_START);
-            startedBenchmark = TRUE;
-        }
-#endif
-
         gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
         mario_reset_bodystate(gMarioState);
         update_mario_inputs(gMarioState);
-
-#ifdef PUPPYCAM
-        if (!(gPuppyCam.flags & PUPPYCAM_BEHAVIOUR_FREE)) {
-#endif
         mario_handle_special_floors(gMarioState);
-#ifdef PUPPYCAM
-        }
-#endif
         mario_process_interactions(gMarioState);
 
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
-            return ACTIVE_PARTICLE_NONE;
+            return 0;
         }
 
         // The function can loop through many action shifts in one frame,
@@ -1751,13 +1730,33 @@ s32 execute_mario_action(UNUSED struct Object *obj) {
         // if a loop of actions were found, but there has not been a situation found.
         while (inLoop) {
             switch (gMarioState->action & ACT_GROUP_MASK) {
-                case ACT_GROUP_STATIONARY: inLoop = mario_execute_stationary_action(gMarioState); break;
-                case ACT_GROUP_MOVING:     inLoop = mario_execute_moving_action(gMarioState);     break;
-                case ACT_GROUP_AIRBORNE:   inLoop = mario_execute_airborne_action(gMarioState);   break;
-                case ACT_GROUP_SUBMERGED:  inLoop = mario_execute_submerged_action(gMarioState);  break;
-                case ACT_GROUP_CUTSCENE:   inLoop = mario_execute_cutscene_action(gMarioState);   break;
-                case ACT_GROUP_AUTOMATIC:  inLoop = mario_execute_automatic_action(gMarioState);  break;
-                case ACT_GROUP_OBJECT:     inLoop = mario_execute_object_action(gMarioState);     break;
+                case ACT_GROUP_STATIONARY:
+                    inLoop = mario_execute_stationary_action(gMarioState);
+                    break;
+
+                case ACT_GROUP_MOVING:
+                    inLoop = mario_execute_moving_action(gMarioState);
+                    break;
+
+                case ACT_GROUP_AIRBORNE:
+                    inLoop = mario_execute_airborne_action(gMarioState);
+                    break;
+
+                case ACT_GROUP_SUBMERGED:
+                    inLoop = mario_execute_submerged_action(gMarioState);
+                    break;
+
+                case ACT_GROUP_CUTSCENE:
+                    inLoop = mario_execute_cutscene_action(gMarioState);
+                    break;
+
+                case ACT_GROUP_AUTOMATIC:
+                    inLoop = mario_execute_automatic_action(gMarioState);
+                    break;
+
+                case ACT_GROUP_OBJECT:
+                    inLoop = mario_execute_object_action(gMarioState);
+                    break;
             }
         }
 
@@ -1765,34 +1764,18 @@ s32 execute_mario_action(UNUSED struct Object *obj) {
         squish_mario_model(gMarioState);
         set_submerged_cam_preset_and_spawn_bubbles(gMarioState);
         update_mario_health(gMarioState);
-#ifdef BREATH_METER
-        update_mario_breath(gMarioState);
-#endif
         update_mario_info_for_cam(gMarioState);
         mario_update_hitbox_and_cap_model(gMarioState);
-
-        // Both of the wind handling portions play wind audio only in
-        // non-Japanese releases.
-        if (gMarioState->floor->type == SURFACE_HORIZONTAL_WIND) {
-            spawn_wind_particles(0, (gMarioState->floor->force << 8));
-            play_sound(SOUND_ENV_WIND2, gMarioState->marioObj->header.gfx.cameraToObject);
-        }
-
-        if (gMarioState->floor->type == SURFACE_VERTICAL_WIND) {
-            spawn_wind_particles(1, 0);
-            play_sound(SOUND_ENV_WIND2, gMarioState->marioObj->header.gfx.cameraToObject);
-        }
-
         play_infinite_stairs_music();
-        gMarioState->marioObj->oInteractStatus = INT_STATUS_NONE;
-#if ENABLE_RUMBLE
-        queue_rumble_particles(gMarioState);
-#endif
 
+        gMarioState->marioObj->oInteractStatus = 0;
+#ifdef RUMBLE_FEEDBACK
+        queue_rumble_particles();
+#endif
         return gMarioState->particleFlags;
     }
 
-    return ACTIVE_PARTICLE_NONE;
+    return 0;
 }
 
 /**************************************************

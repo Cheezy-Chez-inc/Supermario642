@@ -920,14 +920,14 @@ u32 interact_warp(struct MarioState *m, UNUSED u32 interactType, struct Object *
     return FALSE;
 }
 
-u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
+u32 interact_warp_door(struct MarioState *m, u32 playerIndex, struct Object *obj) {
     u32 doorAction = ACT_UNINITIALIZED;
 #ifndef UNLOCK_ALL
     u32 saveFlags = save_file_get_flags();
     s16 warpDoorId = (obj->oBehParams >> 24);
 #endif
 
-    if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
+    if (gMarioStates[playerIndex].action == ACT_WALKING || gMarioStates[playerIndex].action == ACT_DECELERATING) {
 #ifndef UNLOCK_ALL
         if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
             if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
@@ -959,7 +959,7 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
         }
 #endif
 
-        if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
+        if (gMarioStates[playerIndex].action == ACT_WALKING || gMarioStates[playerIndex].action == ACT_DECELERATING) {
             u32 actionArg = should_push_or_pull_door(m, obj) + WARP_FLAG_DOOR_IS_WARP;
 
             if (doorAction == 0) {
@@ -970,8 +970,8 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
                 }
             }
 
-            m->interactObj = obj;
-            m->usedObj = obj;
+            gMarioStates[playerIndex].interactObj = obj;
+            gMarioStates[playerIndex].usedObj = obj;
             return set_mario_action(m, doorAction, actionArg);
         }
     }

@@ -428,16 +428,27 @@ u32 common_air_action_step(struct MarioState *m, u32 landAction, s32 animation, 
     return stepResult;
 }
 
-s32 act_jump(struct MarioState *m) {
-#ifdef EASIER_LONG_JUMPS
-    if (m->actionTimer < 1) {
-        m->actionTimer++;
-        if (m->input & INPUT_Z_PRESSED && m->forwardVel > 10.0f) {
-            return set_jumping_action(m, ACT_LONG_JUMP, 0);
+s32 maxFlutterTimer = 13;
+s32 flutterTimer = 0;
+
+s32 act_flutterJump(struct MarioState *m){
+     if (m->vel[1] < 0 && m->input & INPUT_A_DOWN && gMarioState->playerID == 1 && !(m->flags & MARIO_WING_CAP)) {
+        flutterTimer++;
+        if(flutterTimer<maxFlutterTimer)
+        {
+            m->vel[1] += 7.3;
+            set_mario_animation(m, MARIO_ANIM_RUNNING_UNUSED);
+            if (is_anim_at_end(m)) {
+                set_anim_to_frame(m, 0);
+            }
+        }
+        if(m->forwardVel > 0){
+            m->forwardVel -= 1.2;
         }
     }
-#endif
+}
 
+s32 act_jump(struct MarioState *m) {
     if (check_kick_or_dive_in_air(m)) {
         return TRUE;
     }
@@ -449,6 +460,7 @@ s32 act_jump(struct MarioState *m) {
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
     common_air_action_step(m, ACT_JUMP_LAND, MARIO_ANIM_SINGLE_JUMP,
                            AIR_STEP_CHECK_LEDGE_GRAB | AIR_STEP_CHECK_HANG);
+
     return FALSE;
 }
 
@@ -501,6 +513,8 @@ s32 act_backflip(struct MarioState *m) {
         return set_mario_action(m, ACT_GROUND_POUND, 0);
     }
 
+    if (gMarioState->playerID == 1 && m->vel[1] < 0) return set_mario_action(&gMarioStates[1], ACT_TWIRLING, 0);
+
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_YAH_WAH_HOO);
     common_air_action_step(m, ACT_BACKFLIP_LAND, MARIO_ANIM_BACKFLIP, 0);
 #if ENABLE_RUMBLE
@@ -543,6 +557,10 @@ s32 act_hold_jump(struct MarioState *m) {
     if (m->marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
         return drop_and_set_mario_action(m, ACT_FREEFALL, 0);
     }
+    if (gMarioStates[1].marioObj->oInteractStatus & INT_STATUS_MARIO_DROP_OBJECT) {
+        return drop_and_set_mario_action(m, ACT_FLUTTER, 0);
+    }
+
 
     if ((m->input & INPUT_B_PRESSED) && !(m->heldObj->oInteractionSubtype & INT_SUBTYPE_HOLDABLE_NPC)) {
         return set_mario_action(m, ACT_AIR_THROW, 0);
@@ -2058,6 +2076,7 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
         case ACT_RIDING_HOOT:          cancel = act_riding_hoot(m);          break;
         case ACT_TOP_OF_POLE_JUMP:     cancel = act_top_of_pole_jump(m);     break;
         case ACT_VERTICAL_WIND:        cancel = act_vertical_wind(m);        break;
+        case ACT_FLUTTER:              cancel = act_flutterJump(m);              break;
     }
     /* clang-format on */
 

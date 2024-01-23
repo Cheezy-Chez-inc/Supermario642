@@ -55,6 +55,8 @@ Gfx *geo_intro_super_mario_64_logo(s32 callContext, struct GraphNode *node, UNUS
         dlIter = dl;
         Vec3f scale;
 
+        print_text(120, 65, "& LUIGI");
+          
         // determine scale based on the frame counter
         if (sIntroFrameCounter >= 0 && sIntroFrameCounter < INTRO_STEPS_ZOOM_IN) {
             // zooming in

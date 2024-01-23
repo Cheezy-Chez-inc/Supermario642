@@ -276,6 +276,7 @@ void load_mario_area(u8 playerIndex) {
         spawn_objects_from_info(0, &gPlayerSpawnInfos[playerIndex]);
     }
 }
+
 void unload_mario_area(void) {
     if ((gCurrentArea != NULL) && (gCurrentArea->flags & AREA_FLAG_LOAD)) {
         unload_objects_from_area(0, gMarioSpawnInfo->activeAreaIndex);

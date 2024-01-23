@@ -363,11 +363,13 @@ void init_mario_after_warp(u8 playerIndex) {
         gPlayerSpawnInfos[playerIndex].startAngle[2] = 0;
 
         if (marioSpawnType == MARIO_SPAWN_DOOR_WARP) {
-            init_door_warp(&gPlayerSpawnInfos[playerIndex], sWarpDest.arg);
+            init_door_warp(&gPlayerSpawnInfos[0], sWarpDest.arg);
+            init_door_warp(&gPlayerSpawnInfos[1], sWarpDest.arg);
         }
 
         if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL || sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
-            gPlayerSpawnInfos[playerIndex].areaIndex = sWarpDest.areaIdx;
+            gPlayerSpawnInfos[0].areaIndex = sWarpDest.areaIdx;
+            gPlayerSpawnInfos[1].areaIndex = sWarpDest.areaIdx;
             load_mario_area(playerIndex);
         }
 
