@@ -7,6 +7,8 @@
 
 #define MODEL_MARIO                            0x01        // mario_geo
 #define MODEL_LUIGI                            0x02        // unused
+#define MODEL_WARIO                            0x92       // mario_geo
+#define MODEL_WALUIGI                          0x93        // unused
 
 /* Various static level geometry, the geo layout differs but terrain object presets treat them the same.*/
 
@@ -463,8 +465,6 @@
 #define MODEL_SPARKLES_ANIMATION          0x8F        // sparkles_animation_geo
 #define MODEL_RED_FLAME                   0x90        // red_flame_geo
 #define MODEL_BLUE_FLAME                  0x91        // blue_flame_geo
-// find me
-// find me
 #define MODEL_BURN_SMOKE                  0x94        // burn_smoke_geo
 #define MODEL_SPARKLES                    0x95        // sparkles_geo
 #define MODEL_SMOKE                       0x96        // smoke_geo

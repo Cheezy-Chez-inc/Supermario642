@@ -74,6 +74,7 @@ enum LevelCommands {
     /*0x3F*/ LEVEL_CMD_PUPPYLIGHT_ENVIRONMENT,
     /*0x40*/ LEVEL_CMD_PUPPYLIGHT_NODE,
     /*0x41*/ LEVEL_CMD_SET_ECHO,
+    /*0x23*/ LEVEL_CMD_WALUIGI,
 };
 
 enum LevelActs {
@@ -457,10 +458,10 @@ enum GoddardScene {
     CMD_PTR(objList)
 
 // unused
-#define CMD3A(unk2, unk4, unk6, unk8, unk10) \
-    CMD_BBH(LEVEL_CMD_3A, 0x0C, unk2), \
-    CMD_HH(unk6, unk8), \
-    CMD_HH(unk10, 0x0000)
+#define CMD3A(model, behArg, beh) \
+    CMD_BBH(LEVEL_CMD_3A, 0x0C, model), \
+    CMD_W(behArg), \
+    CMD_PTR(beh)
 
 #define WHIRLPOOL(index, acts, posX, posY, posZ, strength) \
     CMD_BBBB(LEVEL_CMD_CREATE_WHIRLPOOL, 0x0C, index, acts), \
@@ -469,6 +470,11 @@ enum GoddardScene {
 
 #define GET_OR_SET(op, var) \
     CMD_BBBB(LEVEL_CMD_GET_OR_SET_VAR, 0x04, op, var)
+
+#define CMD3D(model, behArg, beh) \
+    CMD_BBH(LEVEL_CMD_PUPPYVOLUME, 0x0C, model), \
+    CMD_W(behArg), \
+    CMD_PTR(beh)
 
 // Presets
 

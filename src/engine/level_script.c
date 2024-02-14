@@ -594,22 +594,20 @@ static void level_cmd_create_painting_warp_node(void) {
 }
 
 static void level_cmd_3A(void) {
-    struct UnusedArea28 *val4;
+   ModelID16 model = CMD_GET(ModelID16, 0xC);
+    vec3s_set(gPlayerSpawnInfos[2].startPos, 0, 0, 0);
+    vec3s_set(gPlayerSpawnInfos[2].startAngle, 0, 0, 0);
 
-    if (sCurrAreaIndex != -1) {
-        if ((val4 = gAreas[sCurrAreaIndex].unused) == NULL) {
-            val4 = gAreas[sCurrAreaIndex].unused =
-                alloc_only_pool_alloc(sLevelPool, sizeof(struct UnusedArea28));
-        }
+    gPlayerSpawnInfos[2].activeAreaIndex = -1;
+    gPlayerSpawnInfos[2].areaIndex = 0;
+    gPlayerSpawnInfos[2].behaviorArg = CMD_GET(u32, 4);
+    gPlayerSpawnInfos[2].behaviorScript = CMD_GET(void *, 8);
+    gPlayerSpawnInfos[2].model = gLoadedGraphNodes[MODEL_WARIO];
+    gPlayerSpawnInfos[2].next = NULL;
 
-        val4->unk00 = CMD_GET(s16, 2);
-        val4->unk02 = CMD_GET(s16, 4);
-        val4->unk04 = CMD_GET(s16, 6);
-        val4->unk06 = CMD_GET(s16, 8);
-        val4->unk08 = CMD_GET(s16, 10);
-    }
 
     sCurrentCmd = CMD_NEXT;
+
 }
 
 static void level_cmd_create_whirlpool(void) {
@@ -701,16 +699,24 @@ static void level_cmd_unload_area(void) {
 static void level_cmd_set_mario_start_pos(void) {
     gPlayerSpawnInfos[0].areaIndex = CMD_GET(u8, 2);
     gPlayerSpawnInfos[1].areaIndex = CMD_GET(u8, 2);
+    gPlayerSpawnInfos[2].areaIndex = CMD_GET(u8, 2);
+    gPlayerSpawnInfos[3].areaIndex = CMD_GET(u8, 2);
 
 #if IS_64_BIT
     vec3s_set(gPlayerSpawnInfos[0].startPos, CMD_GET(s16, 6), CMD_GET(s16, 8), CMD_GET(s16, 10));
     vec3s_set(gPlayerSpawnInfos[1].startPos, CMD_GET(s16, 6), CMD_GET(s16, 8), CMD_GET(s16, 10));
+    vec3s_set(gPlayerSpawnInfos[2].startPos, CMD_GET(s16, 6), CMD_GET(s16, 8), CMD_GET(s16, 10));
+    vec3s_set(gPlayerSpawnInfos[3].startPos, CMD_GET(s16, 6), CMD_GET(s16, 8), CMD_GET(s16, 10));
 #else
     vec3s_copy(gPlayerSpawnInfos[0].startPos, CMD_GET(Vec3s, 6));
     vec3s_copy(gPlayerSpawnInfos[1].startPos, CMD_GET(Vec3s, 6));
+    vec3s_copy(gPlayerSpawnInfos[2].startPos, CMD_GET(Vec3s, 6));
+    vec3s_copy(gPlayerSpawnInfos[3].startPos, CMD_GET(Vec3s, 6));
 #endif
     vec3s_set(gPlayerSpawnInfos[0].startAngle, 0, CMD_GET(s16, 4) * 0x8000 / 180, 0);
     vec3s_set(gPlayerSpawnInfos[1].startAngle, 0, CMD_GET(s16, 4) * 0x8000 / 180, 0);
+    vec3s_set(gPlayerSpawnInfos[2].startAngle, 0, CMD_GET(s16, 4) * 0x8000 / 180, 0);
+    vec3s_set(gPlayerSpawnInfos[3].startAngle, 0, CMD_GET(s16, 4) * 0x8000 / 180, 0);
 
     sCurrentCmd = CMD_NEXT;
 }
@@ -831,40 +837,20 @@ static void level_cmd_get_or_set_var(void) {
 }
 
 static void level_cmd_puppyvolume(void) {
-#ifdef PUPPYCAM
-    if ((sPuppyVolumeStack[gPuppyVolumeCount] = mem_pool_alloc(gPuppyMemoryPool, sizeof(struct sPuppyVolume))) == NULL) {
-        sCurrentCmd = CMD_NEXT;
-        gPuppyError |= PUPPY_ERROR_POOL_FULL;
-        append_puppyprint_log("Puppycamera volume allocation failed.");
-        return;
-    }
+    ModelID16 model = CMD_GET(ModelID16, 0xA);
+    vec3s_set(gPlayerSpawnInfos[3].startPos, 0, 0, 0);
+    vec3s_set(gPlayerSpawnInfos[3].startAngle, 0, 0, 0);
 
-    vec3s_set(sPuppyVolumeStack[gPuppyVolumeCount]->pos, CMD_GET(s16, 2),
-                                                         CMD_GET(s16, 4),
-                                                         CMD_GET(s16, 6));
+    gPlayerSpawnInfos[3].activeAreaIndex = -1;
+    gPlayerSpawnInfos[3].areaIndex = 0;
+    gPlayerSpawnInfos[3].behaviorArg = CMD_GET(u32, 4);
+    gPlayerSpawnInfos[3].behaviorScript = CMD_GET(void *, 8);
+    gPlayerSpawnInfos[3].model = gLoadedGraphNodes[MODEL_WALUIGI];
+    gPlayerSpawnInfos[3].next = NULL;
 
-    vec3s_set(sPuppyVolumeStack[gPuppyVolumeCount]->radius, CMD_GET(s16,  8),
-                                                            CMD_GET(s16, 10),
-                                                            CMD_GET(s16, 12));
 
-    sPuppyVolumeStack[gPuppyVolumeCount]->rot = CMD_GET(s16, 14);
-
-    sPuppyVolumeStack[gPuppyVolumeCount]->func   = CMD_GET(void *, 16);
-    sPuppyVolumeStack[gPuppyVolumeCount]->angles = segmented_to_virtual(CMD_GET(void *, 20));
-
-    sPuppyVolumeStack[gPuppyVolumeCount]->flagsAdd    = CMD_GET(s32, 24);
-    sPuppyVolumeStack[gPuppyVolumeCount]->flagsRemove = CMD_GET(s32, 28);
-
-    sPuppyVolumeStack[gPuppyVolumeCount]->flagPersistance = CMD_GET(u8, 32);
-
-    sPuppyVolumeStack[gPuppyVolumeCount]->shape = CMD_GET(u8,  33);
-    sPuppyVolumeStack[gPuppyVolumeCount]->room  = CMD_GET(s16, 34);
-    sPuppyVolumeStack[gPuppyVolumeCount]->fov  = CMD_GET(u8, 36);
-    sPuppyVolumeStack[gPuppyVolumeCount]->area  = sCurrAreaIndex;
-
-    gPuppyVolumeCount++;
-#endif
     sCurrentCmd = CMD_NEXT;
+
 }
 
 static void level_cmd_puppylight_environment(void) {
@@ -923,6 +909,7 @@ static void level_cmd_set_echo(void) {
     }
     sCurrentCmd = CMD_NEXT;
 }
+
 
 static void (*LevelScriptJumpTable[])(void) = {
     /*LEVEL_CMD_LOAD_AND_EXECUTE            */ level_cmd_load_and_execute,

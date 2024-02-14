@@ -147,6 +147,8 @@ u8 g100CoinStarSpawned = FALSE;
 
 struct MarioState *gMarioState = &gMarioStates[0];
 struct MarioState *gLuigiState = &gMarioStates[1];
+struct MarioState *gWarioState = &gMarioStates[2];
+struct MarioState *gWaluigiState = &gMarioStates[3];
 s8 sWarpCheckpointActive = FALSE;
 
 u16 level_control_timer(s32 timerOp) {
@@ -365,11 +367,15 @@ void init_mario_after_warp(u8 playerIndex) {
         if (marioSpawnType == MARIO_SPAWN_DOOR_WARP) {
             init_door_warp(&gPlayerSpawnInfos[0], sWarpDest.arg);
             init_door_warp(&gPlayerSpawnInfos[1], sWarpDest.arg);
+            init_door_warp(&gPlayerSpawnInfos[2], sWarpDest.arg);
+            init_door_warp(&gPlayerSpawnInfos[3], sWarpDest.arg);
         }
 
         if (sWarpDest.type == WARP_TYPE_CHANGE_LEVEL || sWarpDest.type == WARP_TYPE_CHANGE_AREA) {
             gPlayerSpawnInfos[0].areaIndex = sWarpDest.areaIdx;
             gPlayerSpawnInfos[1].areaIndex = sWarpDest.areaIdx;
+            gPlayerSpawnInfos[2].areaIndex = sWarpDest.areaIdx;
+            gPlayerSpawnInfos[3].areaIndex = sWarpDest.areaIdx;
             load_mario_area(playerIndex);
         }
 
@@ -517,7 +523,7 @@ void warp_credits(void) {
 
     gPlayerSpawnInfos[0].areaIndex = sWarpDest.areaIdx;
 
-        for (playerIndex = 0; playerIndex < 2; playerIndex++) {
+        for (playerIndex = 0; playerIndex < 4; playerIndex++) {
                 load_mario_area(playerIndex);
                 init_mario(playerIndex);
         }
@@ -1279,7 +1285,7 @@ s32 init_level(void) {
             warp_level();
         }
     } else {
-        for (playerIndex = 0; playerIndex < 2; playerIndex++) {
+        for (playerIndex = 0; playerIndex < 3; playerIndex++) {
             if (gPlayerSpawnInfos[playerIndex].areaIndex >= 0) {
                 load_mario_area(playerIndex);
                 init_mario(playerIndex);
@@ -1294,10 +1300,14 @@ s32 init_level(void) {
             if (gCurrDemoInput != NULL) {
                 set_mario_action(gMarioState, ACT_IDLE, 0);
                 set_mario_action(gLuigiState, ACT_IDLE, 0);
+                set_mario_action(gWarioState, ACT_IDLE, 0);
+                set_mario_action(gWaluigiState, ACT_IDLE, 0);
             } else if (!gDebugLevelSelect) {
                 if (gMarioState->action != ACT_UNINITIALIZED) {
                     set_mario_action(gMarioState, ACT_IDLE, 0);
                     set_mario_action(gLuigiState, ACT_IDLE, 0);
+                set_mario_action(gWarioState, ACT_IDLE, 0);
+                set_mario_action(gWaluigiState, ACT_IDLE, 0);
                 }
             }
         }
@@ -1305,14 +1315,20 @@ s32 init_level(void) {
             if (gCurrDemoInput != NULL) {
                 set_mario_action(gMarioState, ACT_IDLE, 0);
                 set_mario_action(gLuigiState, ACT_IDLE, 0);
+                set_mario_action(gWarioState, ACT_IDLE, 0);
+                set_mario_action(gWaluigiState, ACT_IDLE, 0);
             } else if (!gDebugLevelSelect) {
                 if (gMarioState->action != ACT_UNINITIALIZED) {
                     if (save_file_exists(gCurrSaveFileNum - 1)) {
                         set_mario_action(gMarioState, ACT_IDLE, 0);
                         set_mario_action(gLuigiState, ACT_IDLE, 0);
+                set_mario_action(gWarioState, ACT_IDLE, 0);
+                set_mario_action(gWaluigiState, ACT_IDLE, 0);
                     } else {
                         set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
                         set_mario_action(gLuigiState, ACT_INTRO_CUTSCENE, 0);
+                set_mario_action(gWarioState, ACT_INTRO_CUTSCENE, 0);
+                set_mario_action(gWaluigiState, ACT_INTRO_CUTSCENE, 0);
                         fadeFromColor = TRUE;
                     }
                 }

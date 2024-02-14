@@ -1849,11 +1849,14 @@ void init_mario_from_save_file(u8 index) {
     gMarioStates[index].flags = MARIO_NONE;
     gMarioStates[index].action = ACT_UNINITIALIZED;
     gMarioStates[index].spawnInfo = &gPlayerSpawnInfos[index];
-    gMarioStates[index].statusForCamera = &gPlayerCameraState[index];
+    gMarioStates[index].statusForCamera = &gPlayerCameraState[0];
     gMarioStates[index].marioBodyState = &gBodyStates[index];
     gMarioStates[index].controller = &gControllers[index];
     gMarioStates[0].animList = &gMarioAnimsBuf;
     gMarioStates[1].animList = &gLuigiAnimsBuf;
+    gMarioStates[2].animList = &gWarioAnimsBuf;
+    gMarioStates[3].animList = &gWaluigiAnimsBuf;
+
 
     gMarioStates[index].numCoins = 0;
     gMarioStates[index].numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);

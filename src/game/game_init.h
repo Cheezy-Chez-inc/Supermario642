@@ -42,6 +42,8 @@ extern uintptr_t gPhysicalFramebuffers[3];
 extern uintptr_t gPhysicalZBuffer;
 extern void *gMarioAnimsMemAlloc;
 extern void *gLuigiAnimsMemAlloc;
+extern void *gWarioAnimsMemAlloc;
+extern void *gWaluigiAnimsMemAlloc;
 extern void *gDemoInputsMemAlloc;
 extern struct SPTask *gGfxSPTask;
 extern Gfx *gDisplayListHead;
@@ -74,6 +76,8 @@ extern struct DemoInput gRecordedDemoInput;
 // of a single word next to the input list. this word is the current ID count.
 extern struct DmaHandlerList gMarioAnimsBuf;
 extern struct DmaHandlerList gLuigiAnimsBuf;
+extern struct DmaHandlerList gWarioAnimsBuf;
+extern struct DmaHandlerList gWaluigiAnimsBuf;
 extern struct DmaHandlerList gDemoInputsBuf;
 
 extern u8 gMarioAnims[];

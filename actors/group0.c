@@ -32,3 +32,5 @@
 #endif
 
 #include "luigi/model.inc.c"
+#include "wario/model.inc.c"
+#include "waluigi/model.inc.c"

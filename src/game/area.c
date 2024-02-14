@@ -30,7 +30,7 @@
 #include "s2d_engine/init.h"
 #endif
 
-struct SpawnInfo gPlayerSpawnInfos[2];
+struct SpawnInfo gPlayerSpawnInfos[4];
 struct GraphNode *gGraphNodePointers[MODEL_ID_COUNT];
 struct Area gAreaData[AREA_COUNT];
 
